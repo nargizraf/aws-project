@@ -8,9 +8,8 @@ def head():
 def number():
      num1 = 12
      num2 = 11
-     return render_template("body.html", value1 = num1, value2 = num2, sum = num1+num2)
-
-
+     return render_template("body.html", value1 = num1, value2 = num2, sum = num1+num2, sum = num1*num2)
+     
 
 if __name__== "__main__":
      #app.run(debug=True, port=30000)
