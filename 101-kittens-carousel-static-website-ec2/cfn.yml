@@ -15,7 +15,7 @@ Parameters:
   keypair:
     Description: key name
     Type: String
-    Default: nargiz.2
+    Default: nargiz2
   myInstance:
     Description: select instance type
     Type: String
