@@ -1,0 +1,82 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This CloudFormation Template was written for
+  running Kittens Carousel Static Website on EC2.
+  Kittens Carousel Static Website will be
+  deployed on Amazon Linux 2023
+  (latestamiid) EC2 Instance with
+  custom security group which allows http
+  connections on port 80 and ssh port 22 from
+  anywhere. Kittens Carousel Static Website
+  is downloaded from my Public Github repository,
+  then deployed on Apache Web Server.
+  
+Parameters:
+  my-AMI:
+    Description: Choose your AMI 
+    Type: AWS::EC2::Image::Id
+    Default: ami-0b72821e2f351e396
+  my_Instance_type:
+    Description: Choose your instance
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+         - t2.micro
+         - t2.nano
+         - t2.medium
+  my_key:
+    Description: Choose your key pair
+    Type: String
+    Default: nargiz2
+
+  
+Resources:
+  sec_Grp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: nargiz-sec-grp
+      GroupDescription: Allow ssh and http
+      
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  my_Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Ref my_key
+    
+      ImageId: !Ref my-AMI
+      InstanceType: !Ref my_Instance_type
+      
+      SecurityGroupIds:
+        - !Ref sec_Grp
+      UserData: !Base64 |
+        #! /bin/bash
+          yum update -y
+          yum install httpd -y
+          FOLDER="https://raw.githubusercontent.com/okti3535/aws-projects-de-09/main/101-kittens-carousel-static-website-ec2/static-web/"
+          cd /var/www/html
+          wget $FOLDER/index.html
+          wget $FOLDER/cat0.jpg
+          wget $FOLDER/cat1.jpg
+          wget $FOLDER/cat2.jpg
+          systemctl start httpd
+          systemctl enable httpd
+      Tags:
+        - Key: Name
+          Value: !Sub nargiz ${AWS::StackName}
+      
+Outputs:
+my_web:
+  
+  Value: !Sub
+    - http://P
+  Export: 
+    Name:
